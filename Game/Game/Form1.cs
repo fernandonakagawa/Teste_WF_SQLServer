@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace Game
 {
@@ -25,10 +26,15 @@ namespace Game
             SqlCommand sql = new SqlCommand();
             conexao.ConnectionString = @"Data Source=(local)\SQLEXPRESS;Initial Catalog=Game;Integrated Security=True";
             sql.Connection = conexao;
-            sql.CommandText = "INSERT INTO Ranking (nome, pontos) VALUES " +
+            /*sql.CommandText = "INSERT INTO Ranking (nome, pontos) VALUES " +
                 "(@nome, @pontos) ";
             sql.Parameters.AddWithValue("@nome", tbNome.Text);
-            sql.Parameters.AddWithValue("@pontos", (int)ndPontos.Value);
+            sql.Parameters.AddWithValue("@pontos", (int)ndPontos.Value);*/
+            
+            //pode ser escrito dessa forma também
+            sql.CommandText = $"INSERT INTO Ranking (nome, pontos) VALUES " +
+                $"('{tbNome.Text}',{(int)ndPontos.Value})";
+
             int linhasAfetadas = 0;
             try
             {
@@ -37,7 +43,8 @@ namespace Game
             }
             catch(Exception exception)
             {
-                MessageBox.Show("A conexão com o banco falhou");
+                MessageBox.Show($"A conexão com o banco falhou. Erro: {exception.ToString()}");
+                Debug.WriteLine(exception.ToString());
             }
             finally
             {
